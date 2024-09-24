@@ -104,7 +104,7 @@ export default function Header() {
     setDirection("down");
     setVisibility("opacity-1");
     setTimeout(() => {
-      navigate(`/${encodeURIComponent(link.replace(/ /g, "-"))}`);
+      navigate(link);
       setCloseAnimation(false);
     }, 2500);
   };

@@ -13,13 +13,11 @@ export default function ReusableComp() {
 
   const [categoryData, setCategoryData] = useState([]);
 
-  const decodedCategory = decodeURIComponent(category.replace(/-/g, " "));
-
   const [posts, setPosts] = useState([]);
   const [show404, setShow404] = useState(false);
 
   const singleData =
-    categoryData && categoryData.find((item) => item.name === decodedCategory);
+    categoryData && categoryData.find((item) => item.name === category);
 
   async function fetchCategoryInfo() {
     const firestore = getFirestore(app);
@@ -40,7 +38,7 @@ export default function ReusableComp() {
   async function fetchCategoryPosts() {
     try {
       const firestore = getFirestore(app);
-      const collectionRef = collection(firestore, decodedCategory);
+      const collectionRef = collection(firestore, category);
       const snapshot = await getDocs(collectionRef);
       const data = snapshot.docs.map((item) => ({
         id: item.id,

@@ -91,7 +91,7 @@ export default function MainComp() {
     console.log(link);
     setCloseAnimation(true);
     setTimeout(() => {
-      navigate(`/${encodeURIComponent(link.replace(/ /g, "-"))}`);
+      navigate(link);
       setCloseAnimation(false);
     }, 2500);
   }
