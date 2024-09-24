@@ -53,8 +53,10 @@ export default function ReusableComp() {
   console.log(show404);
 
   useEffect(() => {
-    fetchCategoryInfo();
-    fetchCategoryPosts();
+    if (singleData) {
+      fetchCategoryInfo();
+      fetchCategoryPosts();
+    }
   }, [category, singleData]);
 
   return (
