@@ -33,9 +33,10 @@ export default function MobileMenu({ setNav }) {
   }, [top]);
 
   const boldNavLin = [
-    { name: "Add Category" },
-    { name: "Add Post" },
-    { name: "Home" },
+    { id: 1, name: "Add Category" },
+    { id: 2, name: "Add Post" },
+    { id: 3, name: "Delete Category" },
+    { id: 4, name: "Home" },
   ];
 
   return (
@@ -63,9 +64,11 @@ export default function MobileMenu({ setNav }) {
                       setVisibility("opacity-1");
                       item.name === "Add Category"
                         ? setNav("addToCategory")
+                        : item.name === "Delete Category"
+                        ? setNav("deleteCategory")
                         : item.name === "Home"
                         ? navigate("/")
-                        : setNav("addPost");
+                        : setNav("addPostToCategory");
                     }}
                     onMouseEnter={() => setBoldAnimateIndex(index)}
                     onMouseLeave={() => setBoldAnimateIndex(null)}

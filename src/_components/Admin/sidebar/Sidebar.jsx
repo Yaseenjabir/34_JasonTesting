@@ -1,7 +1,7 @@
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { BiCategory } from "react-icons/bi";
 import { useNavigate } from "react-router";
-import { MdHome } from "react-icons/md";
+import { MdDelete, MdHome } from "react-icons/md";
 export default function Sidebar({ setNav }) {
   const navigate = useNavigate();
 
@@ -37,6 +37,13 @@ export default function Sidebar({ setNav }) {
           >
             <BiCategory />
             Add Post
+          </button>
+          <button
+            onClick={() => setNav("deleteCategory")}
+            className="bg-white w-[190px] hover:bg-transparent text-blue-500 border border-blue-500 transition-all ease-in-out duration-300 hover:text-white hover:border-white hover:border flex items-center gap-2 text-start my-1 font-semibold px-3 py-1 rounded-md"
+          >
+            <MdDelete />
+            Delete Categroy
           </button>
         </div>
         <div className="opacity-0">hidden</div>

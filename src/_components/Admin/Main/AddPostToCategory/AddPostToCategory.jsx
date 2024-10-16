@@ -26,10 +26,12 @@ export default function AddPostToCategory() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (!file || !category) {
       alert("Mandatory fields cannot be empty");
       return;
     }
+
     try {
       setLoader(true);
       const firestore = getFirestore(app);
@@ -44,13 +46,14 @@ export default function AddPostToCategory() {
       await uploadBytes(imgRef, file);
       const imageURL = await getDownloadURL(imgRef);
 
-      const docRef2 = await addDoc(collection(firestore, `${category}`), {
+      await addDoc(collection(firestore, `${category}`), {
         title: titleRef.current?.value.trim(),
         image: imageURL,
-      }).then(() => {
-        alert(`Post added to ${category}`);
-        location.reload();
       });
+
+      alert(`Post added to ${category}`);
+
+      await clearAllCaches();
     } catch (error) {
       alert(error);
     } finally {
@@ -58,9 +61,21 @@ export default function AddPostToCategory() {
     }
   }
 
-  const [data, setData] = useState();
+  async function clearAllCaches() {
+    const cacheNames = await caches.keys();
 
-  console.log(data);
+    console.log(cacheNames);
+
+    await Promise.all(
+      cacheNames.map(async (cacheName) => {
+        return caches.delete(cacheName);
+      })
+    );
+
+    console.log("All caches cleared!");
+  }
+
+  const [data, setData] = useState();
 
   const fetchData = async () => {
     const firestore = getFirestore(app);

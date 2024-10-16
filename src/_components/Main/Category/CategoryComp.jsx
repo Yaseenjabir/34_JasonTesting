@@ -1,4 +1,10 @@
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import { MyContext } from "../../../../context-Api/ContextAPI";
 import AnimateOnClose from "../../../../framer-motion/AnimateOnClose";
 import { useContext, useEffect, useState } from "react";
@@ -8,34 +14,60 @@ import NotFoundPage from "../404 Page/NotFoundPage";
 
 export default function ReusableComp() {
   const { closeAnimation } = useContext(MyContext);
-
   const { category } = useParams();
-
-  const [categoryData, setCategoryData] = useState([]);
 
   const [posts, setPosts] = useState([]);
   const [show404, setShow404] = useState(false);
-
-  const singleData =
-    categoryData && categoryData.find((item) => item.name === category);
+  const [singleData, setSingleData] = useState({});
 
   async function fetchCategoryInfo() {
+    const cacheName = "category-cache";
+    const cache = await caches.open(cacheName);
+
+    const cachedResponse = await cache.match(`category_${category}`);
+    if (cachedResponse) {
+      const singleData = await cachedResponse.json();
+      setSingleData(singleData);
+      setShow404(false);
+      return;
+    }
+
     const firestore = getFirestore(app);
     const collectionRef = collection(firestore, "categories");
-    const snapshot = await getDocs(collectionRef);
-    const data = snapshot.docs.map((item) => ({
+    const q = query(collectionRef, where("name", "==", category));
+
+    const snapshot = await getDocs(q);
+    const singleData = snapshot.docs.map((item) => ({
       id: item.id,
       ...item.data(),
-    }));
-    setCategoryData(data);
-    if (!singleData) {
-      setShow404(true);
-    } else {
+    }))[0];
+
+    if (singleData) {
+      setSingleData(singleData);
       setShow404(false);
+
+      // Store the fetched data in Cache Storage
+      await cache.put(
+        `category_${category}`,
+        new Response(JSON.stringify(singleData))
+      );
+    } else {
+      setSingleData({});
+      setShow404(true);
     }
   }
 
   async function fetchCategoryPosts() {
+    const cacheName = "category-posts-cache";
+    const cache = await caches.open(cacheName);
+
+    const cachedResponse = await cache.match(`posts_${category}`);
+    if (cachedResponse) {
+      const data = await cachedResponse.json();
+      setPosts(data);
+      return;
+    }
+
     try {
       const firestore = getFirestore(app);
       const collectionRef = collection(firestore, category);
@@ -45,17 +77,22 @@ export default function ReusableComp() {
         ...item.data(),
       }));
       setPosts(data);
+
+      await cache.put(`posts_${category}`, new Response(JSON.stringify(data)));
     } catch (error) {
       alert(error);
     }
   }
 
-  console.log(show404);
-
   useEffect(() => {
     fetchCategoryInfo();
-    fetchCategoryPosts();
-  }, [category, singleData]);
+  }, [category]);
+
+  useEffect(() => {
+    if (singleData) {
+      fetchCategoryPosts();
+    }
+  }, [singleData]);
 
   return (
     <>
@@ -107,7 +144,7 @@ export default function ReusableComp() {
                       className="py-10 px-7 w-full sm:px-20 md:px-[120px] lg:px-[150px] xl:px-[250px]"
                     >
                       <img
-                        className="w-full max-h-[900px]"
+                        className="mx-auto"
                         src={item.image}
                         loading="lazy"
                       />

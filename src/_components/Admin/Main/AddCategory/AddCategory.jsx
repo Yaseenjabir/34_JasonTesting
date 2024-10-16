@@ -20,6 +20,7 @@ export default function AddCategory() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log("FUNC CALLED");
     if (!categoryNameRef.current?.value || !file) {
       alert("Mandatory fields cannot be empty");
       return;
@@ -54,6 +55,7 @@ export default function AddCategory() {
       });
     } catch (error) {
       alert(error);
+      console.log("ERROR OCCUED");
     } finally {
       setLoader(false);
     }

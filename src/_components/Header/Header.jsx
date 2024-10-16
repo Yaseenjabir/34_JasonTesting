@@ -15,6 +15,8 @@ export default function Header() {
   const [direction, setDirection] = useState("down");
   const [visibility, setVisibility] = useState("opacity-1");
 
+  const [click, setClick] = useState(true);
+
   const [showLogin, setShowLogin] = useState();
 
   useEffect(() => {
@@ -25,31 +27,35 @@ export default function Header() {
   }, []);
 
   const handleClick = async () => {
-    if (direction === "down") {
-      setTop("top-[0%]");
-      setVisibility("opacity-1");
-      setDirection("up");
-      setIsOpen(!isOpen);
-    } else {
-      setTop("top-[100%]");
-      setDirection("down");
-      setVisibility("opacity-0");
-      setIsOpen(!isOpen);
+    if (click) {
+      if (direction === "down") {
+        setTop("top-[0%]");
+        setVisibility("opacity-1");
+        setDirection("up");
+        setIsOpen(!isOpen);
+      } else {
+        setTop("top-[100%]");
+        setDirection("down");
+        setVisibility("opacity-0");
+        setIsOpen(!isOpen);
+      }
     }
   };
 
   useEffect(() => {
     if (top === "top-[100%]") {
+      setClick(false);
       setTimeout(() => {
         setTop("top-[-120%]");
         setVisibility("opacity-0");
+        setClick(true);
       }, 1000);
     }
   }, [top]);
 
   const boldNavLin = [
-    { name: "Profile", link: "/profile" },
-    { name: "Work", link: "/" },
+    { id: 1, name: "Profile", link: "/profile" },
+    { id: 2, name: "Work", link: "/" },
   ];
 
   const [animateIndex, setAnimateIndex] = useState(null);
@@ -142,6 +148,7 @@ export default function Header() {
             return (
               <>
                 <li
+                  key={index}
                   onClick={() => {
                     setCloseAnimation(true);
                     setIsOpen(!isOpen);
