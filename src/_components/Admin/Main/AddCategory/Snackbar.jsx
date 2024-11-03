@@ -25,6 +25,7 @@ function SnackbarComp({ responseText, snackBarRef }) {
         Open Snackbar
       </Button>
       <Snackbar
+        hidden
         open={open}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
