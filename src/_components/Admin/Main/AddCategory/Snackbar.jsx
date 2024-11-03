@@ -18,12 +18,11 @@ function SnackbarComp({ responseText, snackBarRef }) {
     <div>
       <Button
         hidden
+        className="opacity-0"
         ref={snackBarRef}
         variant="contained"
         onClick={handleClick}
-      >
-        Open Snackbar
-      </Button>
+      ></Button>
       <Snackbar
         hidden
         open={open}
