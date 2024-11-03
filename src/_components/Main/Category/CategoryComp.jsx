@@ -32,9 +32,11 @@ export default function ReusableComp() {
       return;
     }
 
+    console.log("RUN from category");
+
     const firestore = getFirestore(app);
     const collectionRef = collection(firestore, "categories");
-    const q = query(collectionRef, where("name", "==", category));
+    const q = query(collectionRef, where("title", "==", category));
 
     const snapshot = await getDocs(q);
     const singleData = snapshot.docs.map((item) => ({
@@ -68,9 +70,14 @@ export default function ReusableComp() {
       return;
     }
 
+    console.log("RUN from posts");
+
     try {
       const firestore = getFirestore(app);
-      const collectionRef = collection(firestore, category);
+      const collectionRef = collection(
+        firestore,
+        `categories/${category}/posts`
+      );
       const snapshot = await getDocs(collectionRef);
       const data = snapshot.docs.map((item) => ({
         id: item.id,
@@ -94,6 +101,8 @@ export default function ReusableComp() {
     }
   }, [singleData]);
 
+  console.log(posts);
+
   return (
     <>
       <div
@@ -115,7 +124,7 @@ export default function ReusableComp() {
               className="text-[30px] font-semibold sm:text-[40px] sm:font-bold md:text-[50px] lg:text-[55px] xl:text-[60px] mb-8"
               style={{ fontFamily: "Montserrat" }}
             >
-              {singleData?.name}
+              {singleData?.title}
             </h1>
             <p className="md:text-lg mb-2 lg:text-xl font-light sm:font-normal">
               {singleData?.craftWork && singleData.craftWork}
@@ -138,24 +147,18 @@ export default function ReusableComp() {
             {posts &&
               posts.map((item) => {
                 return (
-                  <>
-                    <div
-                      key={item.id}
-                      className="py-10 px-7 w-full sm:px-20 md:px-[120px] lg:px-[150px] xl:px-[250px]"
+                  <div
+                    key={item.id}
+                    className="py-10 px-7 w-full sm:px-20 md:px-[120px] lg:px-[150px] xl:px-[250px]"
+                  >
+                    <img className="mx-auto" src={item.image} loading="lazy" />
+                    <p
+                      className="mt-2 text-[14px] text-gray-600"
+                      style={{ fontFamily: "sans-serif" }}
                     >
-                      <img
-                        className="mx-auto"
-                        src={item.image}
-                        loading="lazy"
-                      />
-                      <p
-                        className="mt-2 text-[14px] text-gray-600"
-                        style={{ fontFamily: "sans-serif" }}
-                      >
-                        {item.title}
-                      </p>
-                    </div>
-                  </>
+                      {item.title}
+                    </p>
+                  </div>
                 );
               })}
           </div>

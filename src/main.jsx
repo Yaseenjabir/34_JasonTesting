@@ -10,6 +10,11 @@ import Category from "./_components/Main/Category/Category.jsx";
 import Admin from "./_components/Admin/Admin.jsx";
 import Login from "./_components/Admin/login/Login.jsx";
 import HamburgerMenu from "./_components/Hamburger/Hamburger.jsx";
+import Dashboard from "./_components/Dashboard/Dashboard.jsx";
+import Layout from "./_components/Dashboard/Layout.jsx";
+import DashboardPage from "./_components/Dashboard/DashboardPage.jsx";
+import OrdersPage from "./_components/Dashboard/Order.jsx";
+import DeleteCategory from "./_components/Admin/Main/DeleteCategory/DeleteCategory.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,8 +34,25 @@ const router = createBrowserRouter([
   },
   { path: "/login", element: <Login /> },
   {
-    path: "/admin",
-    element: <Admin />,
+    path: "/dashboard",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <Layout />,
+        children: [
+          { path: "/dashboard/category", element: <DashboardPage /> },
+          {
+            path: "/dashboard/post",
+            element: <OrdersPage />,
+          },
+          {
+            path: "/dashboard/delete",
+            element: <DeleteCategory />,
+          },
+        ],
+      },
+    ],
   },
 ]);
 
